@@ -1,0 +1,103 @@
+- name: "Change prompt color"
+  lineinfile:
+    path: /home/lukasz/.bashrc
+    line: export PS1="\[$(tput setaf 3)$(tput bold)\][\u@\h \W]$ \[$(tput sgr0)\]"
+    state: present
+
+
+- name: Fedora rpm fusion
+  become: yes
+  shell: "dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+
+- name: Install the 'Development tools' package group
+  dnf:
+    name: '@Development tools'
+    state: present
+
+- name: Install other packages
+  become: yes
+  dnf:
+    name: "{{ item }}"
+    state: latest
+  loop:
+    - python3-pip
+    - dnf-plugins-core
+    - gnome-tweaks
+    - mosh
+    - tmux
+    - mpv
+    - vim
+    - neovim
+    - nmap
+    - appeditor
+    - nextcloud-client
+    - gstreamer1-devel
+    - gstreamer1-plugins-base-tools
+    - gstreamer1-doc
+    - gstreamer1-plugins-base-devel 
+    - gstreamer1-plugins-good
+    - gstreamer1-plugins-good-extras
+    - gstreamer1-plugins-ugly
+    - gstreamer1-plugins-bad-free
+    - gstreamer1-plugins-bad-free-devel
+    - gstreamer1-plugins-bad-free-extras
+    - qbittorrent
+    - tilix
+    - htop
+    - foliate
+    - bridge-utils
+    - libvirt
+    - virt-install
+    - qemu-kvm
+    - libvirt-devel
+    - virt-top
+    - libguestfs-tools
+    - virt-manager
+    - openssh-server
+    - ansible
+
+- name: Add the flathub flatpak remote to the system installation
+  flatpak_remote:
+    name: flathub
+    state: present
+    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+    method: user
+
+- name: Install Signal messenger
+  flatpak:
+    name: org.signal.Signal
+    state: present
+
+- name: Enable brave repo
+  dnf:
+    name: httpd
+    enablerepo: https://brave-browser-rpm-release.s3.brave.com/x86_64/
+    state: present
+
+- name: Import a key from a url
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
+
+- name: Install brave browser
+  dnf:
+    name: brave-browser
+    state: present
+
+- name: Install packages via pip
+  pip:
+    name: "{{ item }}"
+    extra_args: --user
+  loop:
+    - yubikey-manager
+
+- name: Enable systemd services
+  systemd:
+    state: started
+    enabled: yes
+    name: "{{ item }}"
+  loop:
+  - libvirtd
+  - sshd
+  
+    

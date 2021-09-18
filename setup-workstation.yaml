@@ -1,0 +1,7 @@
+---
+- name: "Fedora workstation setup"
+  hosts: localhost
+  connection: local
+  remote_user: lukasz
+  roles:
+    - base
