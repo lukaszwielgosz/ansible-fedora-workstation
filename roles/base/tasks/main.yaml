@@ -1,3 +1,25 @@
+- name: Import a key for vscode
+  ansible.builtin.rpm_key:
+    state: present
+    key: https://packages.microsoft.com/keys/microsoft.asc
+
+
+- name: Add vscode repo
+  yum_repository:
+    name: vscode
+    description: VSCODE YUM repo
+    baseurl: https://packages.microsoft.com/yumrepos/vscode
+
+- name: update dnf cache
+  dnf:
+    update_cache: yes
+
+- name: Install vscode
+  dnf:
+    name: code
+    state: latest
+
+
 - name: "Change prompt color"
   lineinfile:
     path: /home/lukasz/.bashrc
@@ -7,7 +29,7 @@
 
 - name: Fedora rpm fusion
   become: yes
-  shell: "dnf install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
+  shell: "dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 
 - name: Install the 'Development tools' package group
   dnf:
@@ -55,41 +77,27 @@
     - virt-manager
     - openssh-server
     - ansible
+    - yubikey-manager
 
 - name: Add the flathub flatpak remote to the system installation
   flatpak_remote:
     name: flathub
     state: present
     flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
-    method: user
 
 - name: Install Signal messenger
   flatpak:
     name: org.signal.Signal
     state: present
+    remote: flathub
 
-- name: Enable brave repo
-  dnf:
-    name: httpd
-    enablerepo: https://brave-browser-rpm-release.s3.brave.com/x86_64/
-    state: present
-
-- name: Import a key from a url
-  ansible.builtin.rpm_key:
-    state: present
-    key: https://brave-browser-rpm-release.s3.brave.com/brave-core.asc
-
-- name: Install brave browser
-  dnf:
-    name: brave-browser
-    state: present
 
 - name: Install packages via pip
   pip:
     name: "{{ item }}"
-    extra_args: --user
   loop:
-    - yubikey-manager
+    - pyserial
+    - numpy 
 
 - name: Enable systemd services
   systemd:
