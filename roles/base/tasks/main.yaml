@@ -1,25 +1,3 @@
-- name: Import a key for vscode
-  ansible.builtin.rpm_key:
-    state: present
-    key: https://packages.microsoft.com/keys/microsoft.asc
-
-
-- name: Add vscode repo
-  yum_repository:
-    name: vscode
-    description: VSCODE YUM repo
-    baseurl: https://packages.microsoft.com/yumrepos/vscode
-
-- name: update dnf cache
-  dnf:
-    update_cache: yes
-
-- name: Install vscode
-  dnf:
-    name: code
-    state: latest
-
-
 - name: "Change prompt color"
   lineinfile:
     path: /home/lukasz/.bashrc
@@ -31,53 +9,64 @@
   become: yes
   shell: "dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
 
-- name: Install the 'Development tools' package group
-  dnf:
-    name: '@Development tools'
-    state: present
-
-- name: Install other packages
+- name: Install dnf packages
   become: yes
   dnf:
-    name: "{{ item }}"
+    
     state: latest
-  loop:
-    - python3-pip
-    - dnf-plugins-core
-    - gnome-tweaks
-    - mosh
-    - tmux
-    - mpv
-    - vim
-    - neovim
-    - nmap
-    - appeditor
-    - nextcloud-client
-    - gstreamer1-devel
-    - gstreamer1-plugins-base-tools
-    - gstreamer1-doc
-    - gstreamer1-plugins-base-devel 
-    - gstreamer1-plugins-good
-    - gstreamer1-plugins-good-extras
-    - gstreamer1-plugins-ugly
-    - gstreamer1-plugins-bad-free
-    - gstreamer1-plugins-bad-free-devel
-    - gstreamer1-plugins-bad-free-extras
-    - qbittorrent
-    - tilix
-    - htop
-    - foliate
-    - bridge-utils
-    - libvirt
-    - virt-install
-    - qemu-kvm
-    - libvirt-devel
-    - virt-top
-    - libguestfs-tools
-    - virt-manager
-    - openssh-server
-    - ansible
-    - yubikey-manager
+    name: 
+      - '@Development Tools'
+      - '@Development Libraries'
+      - make
+      - automake
+      - gcc
+      - gcc-c++
+      - kernel-devel
+      - python3-pip
+      - dnf-plugins-core
+      - gnome-tweaks
+      - mosh
+      - tmux
+      - mpv
+      - vim
+      - neovim
+      - nmap
+      - appeditor
+      - nextcloud-client
+      - gstreamer1-devel
+      - gstreamer1-plugins-base-tools
+      - gstreamer1-doc
+      - gstreamer1-plugins-base-devel 
+      - gstreamer1-plugins-good
+      - gstreamer1-plugins-good-extras
+      - gstreamer1-plugins-ugly
+      - gstreamer1-plugins-bad-free
+      - gstreamer1-plugins-bad-free-devel
+      - gstreamer1-plugins-bad-free-extras
+      - qbittorrent
+      - tilix
+      - htop
+      - foliate
+      - bridge-utils
+      - libvirt
+      - virt-install
+      - qemu-kvm
+      - libvirt-devel
+      - virt-top
+      - libguestfs-tools
+      - virt-manager
+      - openssh-server
+      - ansible
+      - yubikey-manager
+      - nodejs
+      - autofs
+      - acpid
+      - dkms
+      - ncurses-compat-libs
+      - alacritty
+      - youtube-dl
+      - ffmpeg
+
 
 - name: Add the flathub flatpak remote to the system installation
   flatpak_remote:
@@ -94,10 +83,10 @@
 
 - name: Install packages via pip
   pip:
-    name: "{{ item }}"
-  loop:
-    - pyserial
-    - numpy 
+    name: 
+      - wheel
+      - pyserial
+      - numpy 
 
 - name: Enable systemd services
   systemd:
@@ -108,4 +97,4 @@
   - libvirtd
   - sshd
   
-    
+  

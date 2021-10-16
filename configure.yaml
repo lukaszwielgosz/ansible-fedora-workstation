@@ -1,0 +1,6 @@
+---
+- name: "configure workstation"
+  hosts: localhost
+  connection: local
+  roles:
+    - config
