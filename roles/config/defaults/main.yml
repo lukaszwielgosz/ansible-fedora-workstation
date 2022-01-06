@@ -1,1 +1,4 @@
-user: lukasz
+nvim_dir: "{{ ansible_env.HOME }}/.config/nvim"
+gnupg_dir: "{{ ansible_env.HOME }}/.gnupg"
+
+

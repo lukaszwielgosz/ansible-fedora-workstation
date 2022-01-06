@@ -66,6 +66,10 @@
       - alacritty
       - youtube-dl
       - ffmpeg
+      - inxi
+      - nemo
+      - nemo-extensions
+      - nemo-fileroller
 
 
 - name: Add the flathub flatpak remote to the system installation

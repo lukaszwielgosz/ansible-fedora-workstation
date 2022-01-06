@@ -1,3 +1,19 @@
+- name: "debug"
+  debug: 
+    msg: "{{ ansible_env.HOME }}/"
+
+- name: "Ensure required directories exist"
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: no
+    mode: 0750
+  loop:
+    - "{{ nvim_dir }}"
+    - "{{ nvim_dir }}/autoload"
+    - "{{ nvim_dir }}/plugged"
+    - "{{ gnupg_dir }}"
+      
 
 - name: "Change prompt color"
   lineinfile:
@@ -5,31 +21,33 @@
     line: export PS1="\[$(tput setaf 3)$(tput bold)\][\u@\h \W]$ \[$(tput sgr0)\]"
     state: present
 
-- name: "add vim alias"
-  lineinfile:
+- name: "Add lines to .bashrc"
+  blockinfile:
     path: /home/lukasz/.bashrc
-    line: alias vim=nvim
-    state: present
+    block: |
+      export PS1="\[$(tput setaf 3)$(tput bold)\][\u@\h \W]$ \[$(tput sgr0)\]"
+      
+      # this is for using gpg keys in yubikey to authenticate with servers when using ssh
+      export GPG_TTY="$(tty)"
+      export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
+      gpgconf --launch gpg-agent
 
+      eval "$(pyenv init -)"
+      alias vim=nvim
+      alias v=nvim
+      alias ytaudio="youtube-dl -x -f bestaudio --audio-format best"
 
-- name: "debug"
-  debug: 
-    msg: "{{ ansible_env.HOME }}/.config/nvim/init.vim"
-
-- name: "Ensure nvim directory exists"
-  file:
-    path: "{{ ansible_env.HOME }}/.config/nvim"
-    state: directory
-  
-- name: "Update init.vim"
+- name: "copy files from template"
   template:
-    src: init.vim
-    dest: "{{ ansible_env.HOME }}/.config/nvim/init.vim"
-
-- name: "Ensure nvim autoload directory exists"
-  file:
-    path: "{{ ansible_env.HOME }}/.local/share/nvim/site/autoload"
-    state: directory
+    src: "{{ item.src }}" 
+    dest: "{{ item.dest }}"
+  loop:
+    - { src: "gpg-agent.conf", dest: "{{ gnupg_dir }}/gpg-agent.conf" }
+    - { src: "init.vim", dest: "{{ nvim_dir }}/init.vim" }
 
 
+- name: Ensure vim plug is in place
+  get_url:
+    dest: "{{ nvim_dir }}/autoload/plug.vim"
+    url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim 
 

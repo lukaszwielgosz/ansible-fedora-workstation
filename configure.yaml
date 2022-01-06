@@ -2,5 +2,7 @@
 - name: "configure workstation"
   hosts: localhost
   connection: local
+  gather_facts: yes
+  become: no
   roles:
     - config
