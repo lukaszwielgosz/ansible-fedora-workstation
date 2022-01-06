@@ -69,6 +69,7 @@
       - nemo
       - nemo-extensions
       - nemo-fileroller
+      - kleopatra
 
 
         #- name: Add the flathub flatpak remote to the system installation

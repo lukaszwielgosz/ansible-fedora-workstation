@@ -330,6 +330,7 @@ au BufNewFile,BufRead *.js, *.html, *.css
     \ set shiftwidth=2
 
 call plug#begin()
+Plug 'wbthomason/packer.nvim'
 Plug 'preservim/nerdtree'
 
 Plug 'neovim/nvim-lspconfig'
