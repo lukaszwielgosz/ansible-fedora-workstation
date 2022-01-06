@@ -71,19 +71,19 @@
       - nemo-fileroller
 
 
-- name: Add the flathub flatpak remote to the system installation
-  become: yes
-  flatpak_remote:
-    name: flathub
-    state: present
-    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
-
-- name: Install Signal messenger
-  become: yes
-  flatpak:
-    name: org.signal.Signal
-    state: present
-    remote: flathub
+        #- name: Add the flathub flatpak remote to the system installation
+        #  become: yes
+        #  flatpak_remote:
+        #    name: flathub
+        #    state: present
+        #    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
+        #
+        #- name: Install Signal messenger
+        #  become: yes
+        #  flatpak:
+        #    name: org.signal.Signal
+        #    state: present
+        #    remote: flathub
 
 
 - name: Install packages via pip
