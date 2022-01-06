@@ -12,7 +12,6 @@
 - name: Install dnf packages
   become: yes
   dnf:
-    
     state: latest
     name: 
       - '@Development Tools'
@@ -73,12 +72,14 @@
 
 
 - name: Add the flathub flatpak remote to the system installation
+  become: yes
   flatpak_remote:
     name: flathub
     state: present
     flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
 
 - name: Install Signal messenger
+  become: yes
   flatpak:
     name: org.signal.Signal
     state: present
@@ -86,6 +87,7 @@
 
 
 - name: Install packages via pip
+  become: yes
   pip:
     name: 
       - wheel
@@ -93,6 +95,7 @@
       - numpy 
 
 - name: Enable systemd services
+  become: yes
   systemd:
     state: started
     enabled: yes
