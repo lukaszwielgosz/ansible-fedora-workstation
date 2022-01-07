@@ -7,7 +7,7 @@
     path: "{{ item }}"
     state: directory
     recurse: no
-    mode: 0750
+    mode: 0700
   loop:
     - "{{ nvim_dir }}"
     - "{{ nvim_dir }}/autoload"
@@ -34,7 +34,6 @@
       gpgconf --launch gpg-agent
       gpg-connect-agent updatestartuptty /bye >/dev/null # fixes problem with sign_and_send_pubkey: signing failed for RSA cardno from agent: agent refused operation
 
-
       eval "$(pyenv init -)"
       alias vim=nvim
       alias v=nvim
@@ -44,6 +43,7 @@
   template:
     src: "{{ item.src }}" 
     dest: "{{ item.dest }}"
+    mode: 0600
   loop:
     - { src: "gpg-agent.conf", dest: "{{ gnupg_dir }}/gpg-agent.conf" }
     - { src: "init.vim", dest: "{{ nvim_dir }}/init.vim" }
