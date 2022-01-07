@@ -32,6 +32,8 @@
       export GPG_TTY="$(tty)"
       export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
       gpgconf --launch gpg-agent
+      gpg-connect-agent updatestartuptty /bye >/dev/null # fixes problem with sign_and_send_pubkey: signing failed for RSA cardno from agent: agent refused operation
+
 
       eval "$(pyenv init -)"
       alias vim=nvim
