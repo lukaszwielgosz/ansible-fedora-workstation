@@ -1,10 +1,3 @@
-- name: "Change prompt color"
-  lineinfile:
-    path: /home/lukasz/.bashrc
-    line: export PS1="\[$(tput setaf 3)$(tput bold)\][\u@\h \W]$ \[$(tput sgr0)\]"
-    state: present
-
-
 - name: Fedora rpm fusion
   become: yes
   shell: "dnf install -y https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm https://mirrors.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm"
@@ -63,28 +56,15 @@
       - dkms
       - ncurses-compat-libs
       - alacritty
-      - youtube-dl
+      - yt-dlp
       - ffmpeg
       - inxi
       - nemo
       - nemo-extensions
       - nemo-fileroller
       - kleopatra
+      - neofetch
 
-
-        #- name: Add the flathub flatpak remote to the system installation
-        #  become: yes
-        #  flatpak_remote:
-        #    name: flathub
-        #    state: present
-        #    flatpakrepo_url: https://flathub.org/repo/flathub.flatpakrepo
-        #
-        #- name: Install Signal messenger
-        #  become: yes
-        #  flatpak:
-        #    name: org.signal.Signal
-        #    state: present
-        #    remote: flathub
 
 
 - name: Install packages via pip
@@ -106,3 +86,14 @@
   - sshd
   
   
+- name: Disable systemd services
+  become: yes
+  systemd:
+    state: stopped 
+    enabled: no 
+    name: "{{ item }}"
+  loop:
+  - abrt-journal-core
+  - abrt-oops
+  - abrt-xorg
+  - abrtd
